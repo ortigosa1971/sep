@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8080;
 const API_KEY = 'e19cf0d935fc49329cf0d935fc5932cc';
 const STATION_ID = 'IALFAR30';
 
-// ✅ Añadir cabecera Content Security Policy (CSP) para permitir estilos/scripts externos
+// ✅ CSP para evitar bloqueos de estilos/scripts externos
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy",
     "default-src 'self'; " +
@@ -20,6 +20,11 @@ app.use((req, res, next) => {
 
 app.use(cors());
 app.use(express.static('public'));
+
+// ✅ Ruta raíz necesaria para que Railway no termine el proceso
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/inicio.html');
+});
 
 app.get('/api/clima', async (req, res) => {
   try {
