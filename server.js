@@ -1,4 +1,3 @@
-
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -9,6 +8,15 @@ const PORT = process.env.PORT || 8080;
 
 const API_KEY = 'e19cf0d935fc49329cf0d935fc5932cc';
 const STATION_ID = 'IALFAR30';
+
+// ✅ Añadir cabecera Content Security Policy (CSP) para permitir estilos/scripts externos
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy",
+    "default-src 'self'; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
+    "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://translate.google.com https://www.gstatic.com;");
+  next();
+});
 
 app.use(cors());
 app.use(express.static('public'));
