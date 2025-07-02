@@ -1,4 +1,3 @@
-
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -12,10 +11,11 @@ const PORT = process.env.PORT || 8080;
 const API_KEY = 'e19cf0d935fc49329cf0d935fc5932cc';
 const STATION_ID = 'IALFAR30';
 
-// Middleware CSP
+// Middleware CSP actualizado con connect-src
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy",
     "default-src 'self'; " +
+    "connect-src 'self' https://api.weather.com https://api.open-meteo.com; " +
     "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://www.gstatic.com; " +
     "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://translate.google.com https://www.gstatic.com;");
   next();
@@ -26,7 +26,6 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Sesión
 app.use(session({
   secret: 'clave-secreta',
   resave: false,
@@ -41,7 +40,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'inicio.html'));
 });
 
-// Ruta para login
+// Login
 app.post('/login', (req, res) => {
   const { usuario } = req.body;
   if (usuario && usuario.trim() !== "") {
@@ -51,14 +50,14 @@ app.post('/login', (req, res) => {
   res.redirect('/login.html');
 });
 
-// Ruta para logout
+// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
 });
 
-// API del clima
+// API de clima actual
 app.get('/api/clima', async (req, res) => {
   try {
     const url = `https://api.weather.com/v2/pws/observations/current?stationId=${STATION_ID}&format=json&units=m&apiKey=${API_KEY}`;
@@ -69,7 +68,23 @@ app.get('/api/clima', async (req, res) => {
   }
 });
 
-// Fallback para 404
+// API de pronóstico (Open-Meteo)
+app.get('/api/forecast', async (req, res) => {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=36.985&longitude=-4.223&daily=temperature_2m_min,temperature_2m_max,weathercode,precipitation_probability_max&timezone=auto`;
+  try {
+    const respuesta = await axios.get(url);
+    res.json(respuesta.data);
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo obtener el pronóstico' });
+  }
+});
+
+// Ruta de sesión (necesaria para evitar errores 404)
+app.get('/verificar-sesion', (req, res) => {
+  res.json({ activo: !!req.session.usuario });
+});
+
+// Fallback 404
 app.use((req, res) => {
   res.status(404).send('Página no encontrada');
 });
