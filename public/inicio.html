@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.weather.com https://api.open-meteo.com;">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Estación Meteorológica</title>
@@ -175,7 +174,7 @@
     }
 
     function mostrarLluviaAcumuladaPorMes() {
-      const apiKey = '0f67738a06e84d2ca7738a06e8ad2c6a';
+      const apiKey = 'e19cf0d935fc49329cf0d935fc5932cc';
       const stationId = 'IALFAR30';
       const mesInput = document.getElementById('mes-selector').value;
       const resultado = document.getElementById('resultado-mes');
@@ -286,6 +285,11 @@
 </body>
 
 </html>
+
+
+
+
+
 
 
 
