@@ -144,7 +144,7 @@
     async function fetchForecast() {
       const lat = 36.985;
       const lon = -4.223;
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_min,temperature_2m_max,weathercode,precipitation_probability_max&timezone=auto&forecast_days=7`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_min,temperature_2m_max,weathercode,precipitation_probability_max&timezone=auto`;
       try {
         const res = await fetch(url);
         const data = await res.json();
@@ -285,6 +285,9 @@
 </body>
 
 </html>
+
+
+
 
 
 
